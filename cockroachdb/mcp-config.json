@@ -1,0 +1,87 @@
+{
+  "mcpServers": {
+    "cockroachdb": {
+      "url": "https://cockroachlabs.cloud/mcp",
+      "transport": "http",
+      "headers": {
+        "Authorization": "Bearer ${CRDB_API_KEY}"
+      },
+      "config": {
+        "clusterId": "${CRDB_CLUSTER_ID}",
+        "database": "defaultdb",
+        "mode": "read-only",
+        "auditLogging": true
+      },
+      "description": "CockroachDB Cloud Managed MCP Server — connects the Recall agent directly to the CockroachDB cluster for memory inspection, schema queries, and vector search debugging. Safe by default with read-only mode and full audit logging.",
+      "tools": [
+        {
+          "name": "crdb_query",
+          "description": "Execute a read-only SQL query against the CockroachDB cluster",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "sql": { "type": "string", "description": "SQL query to execute (read-only)" }
+            },
+            "required": ["sql"]
+          }
+        },
+        {
+          "name": "crdb_list_tables",
+          "description": "List all tables in the database",
+          "inputSchema": { "type": "object", "properties": {} }
+        },
+        {
+          "name": "crdb_describe_table",
+          "description": "Describe the schema of a specific table",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "table_name": { "type": "string" }
+            },
+            "required": ["table_name"]
+          }
+        },
+        {
+          "name": "crdb_search_memories",
+          "description": "Search memories using distributed vector indexing with a text query",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "query": { "type": "string", "description": "Natural language search query" },
+              "match_count": { "type": "integer", "default": 5 }
+            },
+            "required": ["query"]
+          }
+        },
+        {
+          "name": "crdb_memory_stats",
+          "description": "Get statistics about the memory store (counts, categories, graph density)",
+          "inputSchema": { "type": "object", "properties": {} }
+        },
+        {
+          "name": "crdb_explain_plan",
+          "description": "Get the query execution plan for a SQL statement",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "sql": { "type": "string" }
+            },
+            "required": ["sql"]
+          }
+        }
+      ]
+    }
+  },
+  "usage": {
+    "claude_code": "Add this config to .claude/settings.json or use via Claude Desktop",
+    "cursor": "Add this config to Cursor's MCP settings",
+    "vscode": "Add this config to VS Code's MCP settings",
+    "setup": [
+      "1. Create a CockroachDB Cloud cluster at cockroachlabs.cloud",
+      "2. Generate an API key from the Cloud Console",
+      "3. Set environment variables: CRDB_API_KEY, CRDB_CLUSTER_ID",
+      "4. The agent can now query memories, inspect schema, and debug vector search",
+      "5. All queries run in read-only mode with full audit logging"
+    ]
+  }
+}
